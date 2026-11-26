@@ -21,3 +21,25 @@ def test_composite():
     assert abs(b.grad - bt.grad.item()) < 1e-6
     assert abs(c.grad - ct.grad.item()) < 1e-6
     assert abs(f.grad - ft.grad.item()) < 1e-6
+
+# test_tanh
+def test_tanh():
+    a = Value(0.5)
+    at = torch.tensor(0.5, dtype=torch.float64, requires_grad=True)
+    L = a.tanh()
+    L.backward()
+
+    Lt = at.tanh()
+    Lt.backward()
+
+    assert abs(a.grad - at.grad.item()) < 1e-6
+    assert abs(L.data - Lt.item()) < 1e-6
+
+# test_reuse
+def test_reuse():
+    a = Value(2.0)
+    b = a + a
+    b.backward()
+    assert abs(a.grad - 2.0) < 1e-6
+
+
